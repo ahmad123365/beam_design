@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Beam Design</title>
+	<link rel="stylesheet"  href="{{url_for('static', filename='styles.css')}}">
+</head>
+<body>
+	<nav class="navbar">
+		<h1 class="title">Beam Design</h1>
+	</nav>
+	<div class="body-container">
+	<form class="col-3" onsubmit="sendData(event)">
+		<input
+		  type="text"
+		  class="text-box"
+		  id="beam_length"
+		  name="beam_length"
+		  placeholder="Beam Length (m)"
+		/>
+
+		<input
+		  type="text"
+		  class="text-box"
+		  id="dead_load"
+		  name="dead_load"
+		  placeholder="Dead Load (not including self weight) (kN/m):"
+		/>
+
+		<input
+		  type="text"
+		  class="text-box"
+		  id="live_load"
+		  name="live_load"
+		  placeholder="Live Load (kN/m)"
+		/>
+
+		<input
+		  type="text"
+		  class="text-box"
+		  id="h"
+		  name="h"
+		  placeholder="h (m)"
+		/>
+
+		<input
+		  type="text"
+		  class="text-box"
+		  id="b"
+		  name="b"
+		  placeholder="b (m)"
+		/>
+
+		<input
+		  type="text"
+		  class="text-box"
+		  id="fprimec"
+		  name="fprimec"
+		  placeholder="f'c (MPa)"
+		/>
+
+		<input
+		  type="text"
+		  class="text-box"
+		  id="fy"
+		  name="fy"
+		  placeholder="fy (MPA)"
+		/>
+		<button class="submit">Submit</button>
+	  </form>
+	  <div class="table" id="dataFrame"></div>
+	</div>
+	  <div class="image-container">
+		<div  class="image"></div>
+		<div  class="image"></div>
+		<div  class="image"></div>
+		
+	  </div>
+	  <script>
+		function sendData(event) {
+		  event.preventDefault();
+		  var beam_length = document.getElementById("beam_length").value;
+		  var dead_load = document.getElementById("dead_load").value;
+		  var live_load = document.getElementById("live_load").value;
+		  var h = document.getElementById("h").value;
+		  var b = document.getElementById("b").value;
+		  var fprimec = document.getElementById("fprimec").value;
+		  var fy = document.getElementById("fy").value;
+
+		  fetch("http://127.0.0.1:5000/data", {
+			method: "POST",
+			headers: {
+			  Accept: "application.json",
+			  "Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+			  beam_length: beam_length,
+			  dead_load: dead_load,
+			  live_load: live_load,
+			  h: h,
+			  b: b,
+			  fprimec: fprimec,
+			  fy: fy,
+			}),
+			Cache: "default",
+		  })
+			.then((response) => response.json())
+			.then((data) => {
+			  // var base64Image = btoa(data.image);
+
+			  // Then, we create an <img> element and set its src attribute to the data URL
+			  var imgElement1 = document.createElement("img");
+			  var imgElement2 = document.createElement("img");
+			  var imgElement3 = document.createElement("img");
+			  imgElement1.src = "data:image/png;base64," + data.image1;
+			  imgElement2.src = "data:image/png;base64," + data.image2;
+			  imgElement3.src = "data:image/png;base64," + data.image3;
+
+			  // Finally, we add the <img> element to the document
+			  document.getElementById("image1").appendChild(imgElement1);
+			  document.getElementById("image2").appendChild(imgElement2);
+			  document.getElementById("image3").appendChild(imgElement3);
+			  document.body.appendChild(imgElement1);
+			  document.body.appendChild(imgElement2);
+			  document.body.appendChild(imgElement3);
+			  console.log(data);
+
+			  var column = [[], [], [], [], [], []];
+
+			  for (let index = 0; index < 8; index++) {
+				column[0].push(data.dataFrame[index][0]);
+				column[1].push(data.dataFrame[index][1]);
+				column[2].push(data.dataFrame[index][2]);
+				column[3].push(data.dataFrame[index][3]);
+				column[4].push(data.dataFrame[index][4]);
+				column[5].push(data.dataFrame[index][5]);
+			  }
+
+			  console.log("====================================");
+			  console.log(column);
+			  console.log("====================================");
+			  var mytable = "<table><tr>";
+			  mytable += "<th>Bar diameter (mm)</th>";
+			  mytable += "<th>No of bars</th>";
+			  mytable += "<th>As (mm²)</th>";
+			  mytable += "<th>a (m)</th>";
+			  mytable += "<th>εt</th>";
+			  mytable += "<th>Classification</th>";
+			  mytable += "<th>ΦMn (kN.m)</th>";
+			  mytable += "<th>Ok/Not Ok</th>";
+			  mytable += "</tr>";
+
+			  for (let j = 0; j < column.length; j++) {
+				console.log(j);
+				mytable += "<tr>";
+				for (let i = 0; i < 8; i++) {
+				  mytable +=
+					"<td>" +
+					(typeof column[j][i] === "number" && i !== 4 && i !== 3
+					  ? parseFloat(column[j][i]).toFixed(2)
+					  : (typeof column[j][i] === "number" && i === 4) ||
+						(typeof column[j][i] === "number" && i === 3)
+					  ? parseFloat(column[j][i]).toFixed(4)
+					  : column[j][i]) +
+					"</td>";
+				}
+				mytable += "</tr>";
+			  }
+			  mytable += "</table>";
+
+			  document.getElementById("dataFrame").innerHTML = mytable;
+			})
+			.catch(function (res) {
+			  console.log(res);
+			});
+		}
+	  </script>
+	</div>
+  </div>
+</body>
+
+</body>
+</html>

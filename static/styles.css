@@ -1,0 +1,83 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar {
+	display: flex;
+	justify-content: space-between;
+	background-color: #537188;
+	color: #fff;
+	padding: 1.5em;
+	border-radius: 0 0 15px 15px;
+	box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+  }
+
+.body-container {
+	display: flex;
+	flex-wrap: wrap;
+	width: 100vw;
+}
+
+
+.table {
+	margin: 1em;
+}
+
+form {
+	display: flex;
+	gap: 1em;
+	flex-direction: column;
+
+	margin: 1em;
+}
+.text-box{
+	display: block;
+	font-size: 1rem;
+	padding: .5em 1em .5em .5em;
+	min-width: 400px;
+}
+
+.submit {
+	font-size: 1rem;
+	padding: .5em 1em;
+	width: 100px;
+	margin-left: auto;
+	background-color: #537188;
+	border: none;
+	color:#fff;
+}
+
+/* Table design */
+table {
+	color: #333;
+	background: white;
+	border: 1px solid grey;
+	font-size: 12pt;
+	border-collapse: collapse;
+  }
+  table thead th,
+  table tfoot th {
+	color: #777;
+	background: rgba(0,0,0,.1);
+  }
+  table caption {
+	padding:.5em;
+  }
+  table th,
+  table td {
+	padding: .5em;
+	border: 1px solid lightgrey;
+  }
+
+  /* Images */
+
+  .image-container {
+	display: flex;
+  }
+
+  .image {
+	width: 33%;
+  }
